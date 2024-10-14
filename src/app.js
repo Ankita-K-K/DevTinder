@@ -1,18 +1,35 @@
 const express = require("express");
 const app = express();
-
-app.use("/hello", (req, res)=>{
-    res.send("Hello hello hello!!!");
+const connectDB = require("./config/database");
+const User = require("./models/userModel")
+app.use(express.json());
+connectDB().then(()=>{
+    console.log("Database connection eshtablished...");
+    app.listen(7777, ()=>{
+        console.log("Server listening on port 7777");
+    });
+})
+.catch((err) => {
+    console.log("Database is not connected");
 })
 
-app.use("/connect", (req, res)=>{
-    res.send("In order to communicate connect to port 7777")
+app.post("/signup", async (req, res)=>{
+    // const user = new User({
+    //     firstName: "Panda",
+    //     lastName: "🐼",
+    //     emailId: "Panda@🐼.com",
+    //     password: "🐼@123"
+    // });
+    const user = new User(req.body);
+    try{
+        // throw new Error("Something went wrong");
+        console.log(req.body);
+        await user.save();
+        res.send("Signed up Successfully");
+    }catch(err){
+        res.status(400).send("Sign up Error: " + err.message);
+    }
 })
 
-app.use("/", (req, res)=>{
-    res.send("Namaste 🙏🏻")
-})
 
-app.listen(7777, ()=>{
-    console.log("Server listening on port 7777");
-});
+
