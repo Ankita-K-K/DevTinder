@@ -1,8 +1,18 @@
 const express = require("express");
 const app = express();
 const connectDB = require("./config/database");
-const User = require("./models/userModel")
+const cookieParser = require("cookie-parser");
+const authRouter = require("./routes/auth");
+const profileRouter = require("./routes/profile");
+const requestRouter = require("./routes/request");
+
 app.use(express.json());
+app.use(cookieParser());
+
+app.use("/", authRouter);
+app.use("/", profileRouter);
+app.use("/", requestRouter);
+
 connectDB().then(()=>{
     console.log("Database connection eshtablished...");
     app.listen(7777, ()=>{
@@ -10,26 +20,10 @@ connectDB().then(()=>{
     });
 })
 .catch((err) => {
-    console.log("Database is not connected");
+    console.log("Database is not connected " + err.message);
 })
 
-app.post("/signup", async (req, res)=>{
-    // const user = new User({
-    //     firstName: "Panda",
-    //     lastName: "🐼",
-    //     emailId: "Panda@🐼.com",
-    //     password: "🐼@123"
-    // });
-    const user = new User(req.body);
-    try{
-        // throw new Error("Something went wrong");
-        console.log(req.body);
-        await user.save();
-        res.send("Signed up Successfully");
-    }catch(err){
-        res.status(400).send("Sign up Error: " + err.message);
-    }
-})
+
 
 
 
