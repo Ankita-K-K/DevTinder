@@ -37,10 +37,10 @@ authRouter.post("/login", async(req, res)=>{
         }else{
             const token = await user.getJWT();
             res.cookie("token", token, {expires: new Date(Date.now() + (7 * 24 * 3600000))});
-            res.send("Logged In Successfully!!");
+            res.send(user);
         }
     }catch(err){
-        res.status(400).send("LOGIN ERROR: " + err.message);
+        res.status(400).json({message: "LOGIN ERROR: " + err.message});
     }
 });
 
