@@ -54,7 +54,7 @@ userSchema = mongoose.Schema({
     },
     photoUrl: {
         type: String,
-        default: "https://t3.ftcdn.net/jpg/07/95/95/14/360_F_795951406_h17eywwIo36DU2L8jXtsUcEXqPeScBUq.jpg",
+        default: "https://www.freeiconspng.com/thumbs/profile-icon-png/profile-icon-9.png",
         validate(value){
             if(!validator.isURL(value)){
                 throw new Error("Photo provided is not valid")
@@ -73,12 +73,6 @@ userSchema = mongoose.Schema({
             }
         }
     },
-    passwordResetToken:{
-        type: String
-    },
-    passwordResetTokenExpires:{
-        type: Date
-    }
 },
 {
     timeStamps: true

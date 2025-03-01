@@ -4,12 +4,12 @@ const userAuth = async(req, res, next) => {
     try{
         const {token} = req.cookies;
         if(!token){
-            throw new Error("Inavlid token");
+            return res.status(401).send("Please Login");
         }
         const {_id} = jwt.verify(token, "DevTinder$@#890");
         const user = await User.findById({_id: _id});
         if(!user){
-            throw new Error("User not Found");
+            return res.status(404).send("User not Found");
         }
         req.user = user;
         next();

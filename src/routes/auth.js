@@ -14,9 +14,10 @@ authRouter.post("/signup", async (req, res)=>{
         const passwordHash = await bcrypt.hash(password, 10);
         //creating the user instance
         const user = new User({firstName, lastName,emailId, password:passwordHash});
-        //save the user to the database
+        const token = await user.getJWT();
+        res.cookie("token", token, {expires: new Date(Date.now() + (7 * 24 * 3600000))});
         await user.save();
-        res.send("Signed up Successfully");
+        res.json({message: "Signed up Successfully", data: user});
     }catch(err){
         res.status(400).send("SIGN UP ERROR: " + err.message);
     }
@@ -29,11 +30,11 @@ authRouter.post("/login", async(req, res)=>{
         validateLoginEmail(emailId);
         const user = await User.findOne({emailId: emailId});
         if(!user){
-            throw new Error("Invalid Credentials");
+            throw new Error("Either Email-Id or password is incorrect");
         }
         const isPasswordCorrect = await user.validatePassword(password);
         if(!isPasswordCorrect){
-            throw new Error("Invalid Credentials");
+            throw new Error("Either Email-Id or password is incorrect");
         }else{
             const token = await user.getJWT();
             res.cookie("token", token, {expires: new Date(Date.now() + (7 * 24 * 3600000))});

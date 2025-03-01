@@ -4,7 +4,7 @@ const {userAuth} = require("../middlewares/auth");
 const ConnectionRequest = require("../models/connectionRequestModel");
 const User = require("../models/userModel");
 
-const USER_SAFE_DATA = "firstName lastName photoUrl about skills"
+const USER_SAFE_DATA = "firstName lastName photoUrl about skills age gender"
 
 userRouter.get("/user/requests/recieved", userAuth, async(req, res) => {
     try{
@@ -13,9 +13,6 @@ userRouter.get("/user/requests/recieved", userAuth, async(req, res) => {
             toUserId: loggedInUserId,
             status: "interested"
         }).populate("fromUserId", USER_SAFE_DATA);
-        if(!connectionRequest || connectionRequest.length === 0){
-            return res.status(404).send("Requests not found");
-        }
         res.send({
             message: "Requests fetched successfully",
             data: connectionRequest
@@ -40,9 +37,6 @@ userRouter.get("/user/connections", userAuth, async(req, res) => {
             }
             return row.fromUserId;
         })
-        if(!data || data.length === 0){
-            return res.status(404).send({message: "Connections not found"});
-        }
         res.send({
             message: "Connections fetched", 
             data: data,
